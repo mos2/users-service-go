@@ -60,6 +60,11 @@ func main() {
 			Name: "Hima",
 			Role: "engineer",
 		},
+		{
+			Id:   10,
+			Name: "Dan",
+			Role: "engineer",
+		},
 	}
 
 	r := gin.Default()

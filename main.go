@@ -3,6 +3,7 @@ package main
 import (
 	"strconv"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -68,6 +69,9 @@ func main() {
 	}
 
 	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"https://carbon-nextjs-ucc.apps.o1-373093.cp.fyre.ibm.com"}
+
 	r.GET("/employees", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"employees": employees,
@@ -92,5 +96,7 @@ func main() {
 			c.JSON(404, gin.H{"message": "Not found"})
 		}
 	})
+
+	r.Use(cors.New(config))
 	r.Run()
 }

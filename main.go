@@ -3,7 +3,6 @@ package main
 import (
 	"strconv"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,6 +10,22 @@ type Employee struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
 	Role string `json:"role"`
+}
+
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }
 
 func main() {
@@ -69,8 +84,7 @@ func main() {
 	}
 
 	r := gin.Default()
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"https://carbon-nextjs-ucc.apps.o1-373093.cp.fyre.ibm.com"}
+	r.Use(CORS())
 
 	r.GET("/employees", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -96,7 +110,5 @@ func main() {
 			c.JSON(404, gin.H{"message": "Not found"})
 		}
 	})
-
-	r.Use(cors.New(config))
 	r.Run()
 }
